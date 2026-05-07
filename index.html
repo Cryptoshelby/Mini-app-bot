@@ -1,10 +1,9 @@
-cat > index.html << 'EOF'
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Bot Trading v6.0</title>
+    <title>Angel Trader Robot</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -16,15 +15,14 @@ cat > index.html << 'EOF'
             padding: 15px;
         }
         .overlay {
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(5px);
+            background: rgba(0, 0, 0, 0.65);
             border-radius: 20px;
             padding: 15px;
             min-height: 100vh;
         }
         .header { text-align: center; padding: 15px 0; }
         .header h1 { font-size: 24px; font-weight: 800; color: #00ff88; text-shadow: 0 0 20px rgba(0,255,136,0.5); }
-        .header .subtitle { font-size: 10px; color: #ccc; letter-spacing: 2px; margin-top: 5px; }
+        .header .subtitle { font-size: 10px; color: #ffa502; letter-spacing: 2px; margin-top: 5px; font-weight: 700; }
         .status { display: inline-block; background: rgba(0,255,136,0.2); color: #00ff88; padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; margin-top: 8px; }
         .pulse { animation: pulse 2s infinite; }
         @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
@@ -33,7 +31,7 @@ cat > index.html << 'EOF'
         .nav-tab.active { background: linear-gradient(135deg, #00ff88, #00b4d8); color: #000; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-        .card { background: rgba(0,0,0,0.5); backdrop-filter: blur(10px); border-radius: 16px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        .card { background: rgba(0,0,0,0.5); border-radius: 16px; padding: 18px; margin-bottom: 12px; border: 1px solid rgba(255,255,255,0.1); }
         .card-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; color: #00ff88; }
         .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .stat-item { background: rgba(255,255,255,0.04); border-radius: 12px; padding: 14px; text-align: center; }
@@ -49,22 +47,26 @@ cat > index.html << 'EOF'
         .btn:active { transform: scale(0.97); }
         .btn-green { background: linear-gradient(135deg, #00ff88, #00b4d8); color: #000; }
         .btn-gold { background: linear-gradient(135deg, #ffa502, #ff6348); color: #fff; }
+        .btn-yellow { background: linear-gradient(135deg, #f0b90b, #f8d33a); color: #000; }
         .btn-outline { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2); }
         .forex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .forex-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px; cursor: pointer; }
         .forex-pair { font-weight: 700; font-size: 13px; }
         .forex-price { font-size: 16px; font-weight: 700; }
-        .price-up { color: #00ff88; }
-        .price-down { color: #ff4757; }
         .crypto-list { max-height: 400px; overflow-y: auto; }
         .crypto-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
-        .crypto-item:last-child { border-bottom: none; }
+        .broker-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+        .broker-btn { padding: 15px; border-radius: 12px; text-align: center; font-weight: 700; cursor: pointer; font-size: 14px; }
+        .broker-quotex { background: linear-gradient(135deg, #1a1a1a, #333); border: 2px solid #ffa502; color: #ffa502; }
+        .broker-binance { background: linear-gradient(135deg, #1a1a1a, #333); border: 2px solid #f0b90b; color: #f0b90b; }
+        .price-up { color: #00ff88; }
+        .price-down { color: #ff4757; }
     </style>
 </head>
 <body>
     <div class="overlay">
         <div class="header">
-            <h1>🤖 Bot Trading v6.0</h1>
+            <h1>🤖 Angel Trader Robot</h1>
             <p class="subtitle">TÉCNICA · RISCO · ANÁLISE · DISCIPLINA · ESTRATÉGIA · RESULTADO</p>
             <span class="status pulse">● EN LÍNEA - 8 SEÑALES/DÍA</span>
         </div>
@@ -73,12 +75,12 @@ cat > index.html << 'EOF'
             <button class="nav-tab active" onclick="showTab('inicio')">🏠 Inicio</button>
             <button class="nav-tab" onclick="showTab('forex')">📊 Forex</button>
             <button class="nav-tab" onclick="showTab('crypto')">₿ Crypto</button>
-            <button class="nav-tab" onclick="showTab('quotex')">💹 Quotex</button>
             <button class="nav-tab" onclick="showTab('senales')">🎯 Señales</button>
         </div>
 
         <div id="tab-inicio" class="tab-content active">
-            <div class="card"><div class="card-title">📊 Resumen del Mercado</div>
+            <div class="card">
+                <div class="card-title">📊 Resumen del Mercado</div>
                 <div class="stats-grid">
                     <div class="stat-item"><div class="stat-value">8</div><div class="stat-label">Señales/Día</div></div>
                     <div class="stat-item"><div class="stat-value">95%</div><div class="stat-label">Efectividad</div></div>
@@ -86,28 +88,33 @@ cat > index.html << 'EOF'
                     <div class="stat-item"><div class="stat-value">24/7</div><div class="stat-label">Activo</div></div>
                 </div>
             </div>
-            <button class="btn btn-green" onclick="showTab('senales')">🎯 Ver Señales</button>
-            <button class="btn btn-gold" onclick="abrirQuotex()">💹 Quotex Broker</button>
+            
+            <div class="broker-buttons">
+                <div class="broker-btn broker-quotex" onclick="window.open('https://broker-qx.pro/sign-up/?lid=2097658', '_blank')">
+                    💹 QUOTEX<br><small>Operar Forex</small>
+                </div>
+                <div class="broker-btn broker-binance" onclick="window.open('https://www.binance.com/register?ref=791249019', '_blank')">
+                    ₿ BINANCE<br><small>Operar Crypto</small>
+                </div>
+            </div>
+            
+            <button class="btn btn-green" onclick="showTab('senales')">🎯 Ver Señales en Vivo</button>
             <button class="btn btn-outline" onclick="window.Telegram.WebApp.close()">📱 Cerrar</button>
         </div>
 
         <div id="tab-forex" class="tab-content">
-            <div class="card"><div class="card-title">📊 Forex - Tiempo Real</div><div class="forex-grid" id="forex-prices">Cargando...</div></div>
-            <button class="btn btn-gold" onclick="abrirQuotex()">💹 Operar en Quotex</button>
+            <div class="card"><div class="card-title">📊 Forex - Tiempo Real</div><div class="forex-grid" id="forex-prices">Cargando precios...</div></div>
+            <button class="btn btn-gold" onclick="window.open('https://broker-qx.pro/sign-up/?lid=2097658', '_blank')">💹 Operar en Quotex</button>
         </div>
 
         <div id="tab-crypto" class="tab-content">
             <div class="card"><div class="card-title">₿ Todas las Cryptos - Binance</div><div class="crypto-list" id="crypto-prices">Cargando precios...</div></div>
-        </div>
-
-        <div id="tab-quotex" class="tab-content">
-            <div class="card"><div class="card-title">💹 Quotex - Plataforma Oficial</div><p style="font-size:12px;color:#aaa;">Toca para abrir la plataforma</p></div>
-            <button class="btn btn-gold" onclick="abrirQuotex()">💹 ABRIR QUOTEX AHORA</button>
-            <button class="btn btn-outline" onclick="window.open('https://broker-qx.pro/sign-up/?lid=2097658', '_blank')">🔗 Abrir en Navegador</button>
+            <button class="btn btn-yellow" onclick="window.open('https://www.binance.com/register?ref=791249019', '_blank')">₿ Operar en Binance</button>
         </div>
 
         <div id="tab-senales" class="tab-content">
-            <div class="card signal-card"><div class="card-title">🎯 Señal Forex - Quotex</div>
+            <div class="card signal-card">
+                <div class="card-title">🎯 Señal Forex - Quotex</div>
                 <div>
                     <div class="signal-row"><span>📊 Par:</span><span><strong>EUR/USD</strong></span></div>
                     <div class="signal-row"><span>⏰ Entrada:</span><span><strong id="hora-entrada">--:--</strong></span></div>
@@ -118,17 +125,13 @@ cat > index.html << 'EOF'
                 </div>
             </div>
             <button class="btn btn-green" onclick="generarSenal()">🔄 Nueva Señal</button>
-            <button class="btn btn-gold" onclick="abrirQuotex()">💹 Operar en Quotex</button>
+            <button class="btn btn-gold" onclick="window.open('https://broker-qx.pro/sign-up/?lid=2097658', '_blank')">💹 Operar en Quotex</button>
         </div>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
         tg.expand(); tg.ready();
-
-        function abrirQuotex() {
-            window.open('https://broker-qx.pro/sign-up/?lid=2097658', '_blank');
-        }
 
         function showTab(tab) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -164,10 +167,10 @@ cat > index.html << 'EOF'
                 let h = '';
                 pares.forEach(([p, q]) => {
                     const precio = p.startsWith('USD') ? d.rates[q] : d.rates[q] / d.rates[p.split('/')[0]];
-                    h += '<div class="forex-item" onclick="abrirQuotex()"><div class="forex-pair">'+p+'</div><div class="forex-price">'+precio.toFixed(5)+'</div></div>';
+                    h += '<div class="forex-item" onclick="window.open(\'https://broker-qx.pro/sign-up/?lid=2097658\',\'_blank\')"><div class="forex-pair">'+p+'</div><div class="forex-price">'+precio.toFixed(5)+'</div></div>';
                 });
                 document.getElementById('forex-prices').innerHTML = h;
-            } catch(e) { document.getElementById('forex-prices').innerHTML = 'Error'; }
+            } catch(e) { document.getElementById('forex-prices').innerHTML = 'Error al cargar'; }
         }
 
         async function cargarCrypto() {
@@ -182,11 +185,10 @@ cat > index.html << 'EOF'
                     h += '<div class="crypto-item"><span>'+nombre+'</span><span style="font-weight:700;">$'+precio.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</span></div>';
                 });
                 document.getElementById('crypto-prices').innerHTML = h;
-            } catch(e) { document.getElementById('crypto-prices').innerHTML = 'Error al cargar precios'; }
+            } catch(e) { document.getElementById('crypto-prices').innerHTML = 'Error al cargar'; }
         }
 
         generarSenal();
     </script>
 </body>
 </html>
-EOF
