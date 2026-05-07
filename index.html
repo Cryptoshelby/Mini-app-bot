@@ -6,235 +6,52 @@
     <title>Bot Trading v5.0</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        :root {
-            --bg: #0f0f1a;
-            --card: #1a1a2e;
-            --green: #00ff88;
-            --red: #ff4757;
-            --gold: #ffa502;
-            --text: #ffffff;
-            --subtext: #aaaacc;
-        }
-
+        :root { --bg: #0f0f1a; --card: #1a1a2e; --green: #00ff88; --red: #ff4757; --gold: #ffa502; --text: #ffffff; --subtext: #aaaacc; }
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
-            min-height: 100vh;
-            padding: 15px;
-        }
-
-        /* Header */
-        .header {
-            text-align: center;
-            padding: 20px 0;
-        }
+        body { background: var(--bg); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; min-height: 100vh; padding: 15px; }
+        .header { text-align: center; padding: 20px 0; }
         .header h1 { font-size: 22px; margin: 10px 0; }
-        .header .status { 
-            display: inline-block;
-            background: rgba(0,255,136,0.15);
-            color: var(--green);
-            padding: 5px 14px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 600;
-        }
+        .status { display: inline-block; background: rgba(0,255,136,0.15); color: var(--green); padding: 5px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
         .pulse { animation: pulse 2s infinite; }
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        /* Navegación */
-        .nav-tabs {
-            display: flex;
-            gap: 8px;
-            margin: 15px 0;
-            overflow-x: auto;
-            padding-bottom: 5px;
-        }
-        .nav-tab {
-            padding: 10px 18px;
-            border-radius: 10px;
-            border: none;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: all 0.2s;
-            background: rgba(255,255,255,0.05);
-            color: var(--subtext);
-        }
-        .nav-tab.active {
-            background: linear-gradient(135deg, #00ff88, #00b4d8);
-            color: #0f0f1a;
-        }
-
-        /* Contenido */
+        @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+        .nav-tabs { display: flex; gap: 8px; margin: 15px 0; overflow-x: auto; padding-bottom: 5px; }
+        .nav-tab { padding: 10px 18px; border-radius: 10px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; background: rgba(255,255,255,0.05); color: var(--subtext); }
+        .nav-tab.active { background: linear-gradient(135deg, #00ff88, #00b4d8); color: #0f0f1a; }
         .tab-content { display: none; }
         .tab-content.active { display: block; }
-
-        /* Cards */
-        .card {
-            background: var(--card);
-            border-radius: 16px;
-            padding: 18px;
-            margin-bottom: 14px;
-            border: 1px solid rgba(255,255,255,0.06);
-        }
-        .card-title {
-            font-size: 16px;
-            font-weight: 700;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        /* Estadísticas */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-        }
-        .stat-item {
-            background: rgba(255,255,255,0.03);
-            border-radius: 12px;
-            padding: 14px;
-            text-align: center;
-        }
+        .card { background: var(--card); border-radius: 16px; padding: 18px; margin-bottom: 14px; border: 1px solid rgba(255,255,255,0.06); }
+        .card-title { font-size: 16px; font-weight: 700; margin-bottom: 12px; }
+        .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .stat-item { background: rgba(255,255,255,0.03); border-radius: 12px; padding: 14px; text-align: center; }
         .stat-value { font-size: 26px; font-weight: 700; color: var(--green); }
         .stat-label { font-size: 10px; color: var(--subtext); text-transform: uppercase; margin-top: 4px; }
-
-        /* Señal */
-        .signal-card {
-            background: linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,180,216,0.08));
-            border: 1px solid rgba(0,255,136,0.25);
-        }
-        .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 11px;
-            font-weight: 700;
-        }
+        .signal-card { background: linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,180,216,0.08)); border: 1px solid rgba(0,255,136,0.25); }
+        .badge { display: inline-block; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
         .badge-call { background: rgba(0,255,136,0.2); color: #00ff88; }
         .badge-put { background: rgba(255,71,87,0.2); color: #ff4757; }
-        .signal-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 7px 0;
-            border-bottom: 1px solid rgba(255,255,255,0.04);
-            font-size: 13px;
-        }
+        .signal-row { display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.04); font-size: 13px; }
         .signal-row:last-child { border-bottom: none; }
-
-        /* Botones */
-        .btn {
-            display: block;
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            text-align: center;
-            margin: 8px 0;
-            transition: all 0.2s;
-            text-decoration: none;
-            color: inherit;
-        }
+        .btn { display: block; width: 100%; padding: 14px; border: none; border-radius: 12px; font-size: 15px; font-weight: 700; cursor: pointer; text-align: center; margin: 8px 0; transition: all 0.2s; color: inherit; text-decoration: none; }
         .btn:active { transform: scale(0.97); }
         .btn-green { background: linear-gradient(135deg, #00ff88, #00b4d8); color: #0f0f1a; }
-        .btn-blue { background: linear-gradient(135deg, #0088cc, #0066aa); color: #fff; }
         .btn-gold { background: linear-gradient(135deg, #ffa502, #ff6348); color: #fff; }
         .btn-outline { background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid rgba(255,255,255,0.15); }
         .btn-danger { background: linear-gradient(135deg, #ff4757, #c0392b); color: #fff; }
-
-        /* Iframe Quotex */
-        .iframe-container {
-            position: relative;
-            width: 100%;
-            height: 75vh;
-            border-radius: 12px;
-            overflow: hidden;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .iframe-container iframe {
-            width: 100%;
-            height: 100%;
-            border: none;
-        }
-        .iframe-overlay {
-            position: absolute;
-            bottom: 10px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 10;
-            display: flex;
-            gap: 8px;
-        }
-        .iframe-overlay button {
-            padding: 8px 16px;
-            border-radius: 8px;
-            border: none;
-            font-size: 12px;
-            font-weight: 600;
-            cursor: pointer;
-            background: rgba(0,0,0,0.7);
-            color: #fff;
-        }
-
-        /* Señales en tiempo real */
-        .price-display {
-            font-size: 32px;
-            font-weight: 800;
-            text-align: center;
-            padding: 10px;
-            letter-spacing: 1px;
-        }
-        .price-change {
-            font-size: 14px;
-            text-align: center;
-            font-weight: 600;
-        }
-        .price-up { color: #00ff88; }
-        .price-down { color: #ff4757; }
-
-        .forex-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-        .forex-item {
-            background: rgba(255,255,255,0.03);
-            border-radius: 10px;
-            padding: 12px;
-            cursor: pointer;
-            transition: all 0.2s;
-            border: 1px solid transparent;
-        }
-        .forex-item:active {
-            border-color: rgba(0,255,136,0.5);
-            background: rgba(0,255,136,0.05);
-        }
+        .iframe-container { position: relative; width: 100%; height: 75vh; border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); }
+        .iframe-container iframe { width: 100%; height: 100%; border: none; }
+        .forex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .forex-item { background: rgba(255,255,255,0.03); border-radius: 10px; padding: 12px; cursor: pointer; }
         .forex-pair { font-weight: 700; font-size: 13px; }
         .forex-price { font-size: 16px; font-weight: 700; margin: 4px 0; }
-        .forex-change { font-size: 11px; }
+        .price-up { color: #00ff88; }
+        .price-down { color: #ff4757; }
     </style>
 </head>
 <body>
-
-    <!-- Header -->
     <div class="header">
         <h1>🤖 Bot Trading v5.0</h1>
         <span class="status pulse">● EN LÍNEA</span>
     </div>
-
-    <!-- Navegación -->
     <div class="nav-tabs">
         <button class="nav-tab active" onclick="showTab('inicio')">🏠 Inicio</button>
         <button class="nav-tab" onclick="showTab('forex')">📊 Forex</button>
@@ -243,224 +60,110 @@
         <button class="nav-tab" onclick="showTab('senales')">🎯 Señales</button>
     </div>
 
-    <!-- TAB: Inicio -->
     <div id="tab-inicio" class="tab-content active">
-        <div class="card">
-            <div class="card-title">📊 Resumen del Mercado</div>
+        <div class="card"><div class="card-title">📊 Resumen</div>
             <div class="stats-grid">
-                <div class="stat-item">
-                    <div class="stat-value" id="forex-count">3</div>
-                    <div class="stat-label">Señales Forex Hoy</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value" id="crypto-count">3</div>
-                    <div class="stat-label">Señales Crypto Hoy</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">95%</div>
-                    <div class="stat-label">Efectividad</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-value">5m</div>
-                    <div class="stat-label">Próximo Análisis</div>
-                </div>
+                <div class="stat-item"><div class="stat-value">3</div><div class="stat-label">Forex Hoy</div></div>
+                <div class="stat-item"><div class="stat-value">3</div><div class="stat-label">Crypto Hoy</div></div>
+                <div class="stat-item"><div class="stat-value">95%</div><div class="stat-label">Efectividad</div></div>
+                <div class="stat-item"><div class="stat-value">5m</div><div class="stat-label">Próximo</div></div>
             </div>
         </div>
-
-        <div class="card signal-card">
-            <div class="card-title">
-                🎯 Última Señal
-                <span class="badge badge-call">CALL 🟩</span>
-            </div>
-            <div class="signal-row">
-                <span>📊 Par: <strong>EUR/USD</strong></span>
-                <span>⏰ 16:45 - 16:50</span>
-            </div>
-            <div class="signal-row">
-                <span>📈 Gale 1: 16:55</span>
-                <span>📈 Gale 2: 17:00</span>
-            </div>
-        </div>
-
-        <button class="btn btn-green" onclick="showTab('senales')">🎯 Ver Señales en Vivo</button>
-        <button class="btn btn-gold" onclick="showTab('quotex')">💹 Abrir Quotex Trader</button>
-        <button class="btn btn-blue" onclick="window.Telegram.WebApp.close()">📱 Volver al Bot</button>
+        <button class="btn btn-green" onclick="showTab('senales')">🎯 Ver Señales</button>
+        <button class="btn btn-gold" onclick="abrirQuotex()">💹 Quotex Broker</button>
+        <button class="btn btn-outline" onclick="window.Telegram.WebApp.close()">📱 Cerrar</button>
     </div>
 
-    <!-- TAB: Forex -->
     <div id="tab-forex" class="tab-content">
-        <div class="card">
-            <div class="card-title">📊 Forex - Tiempo Real</div>
-            <div class="forex-grid" id="forex-prices">
-                <div class="forex-item"><div class="forex-pair">Cargando...</div></div>
-            </div>
-        </div>
-        <button class="btn btn-green" onclick="showTab('quotex')">💹 Operar en Quotex</button>
-        <button class="btn btn-outline" onclick="showTab('senales')">🎯 Generar Señal Forex</button>
+        <div class="card"><div class="card-title">📊 Forex Tiempo Real</div><div class="forex-grid" id="forex-prices">Cargando...</div></div>
+        <button class="btn btn-gold" onclick="abrirQuotex()">💹 Operar en Quotex</button>
     </div>
 
-    <!-- TAB: Crypto -->
     <div id="tab-crypto" class="tab-content">
-        <div class="card">
-            <div class="card-title">₿ Crypto - Tiempo Real</div>
-            <div id="crypto-prices">Cargando precios...</div>
-        </div>
-        <button class="btn btn-blue" onclick="window.open('https://www.binance.com/es/futures', '_blank')">🔗 Binance Futures</button>
-        <button class="btn btn-outline" onclick="showTab('senales')">🎯 Generar Señal Crypto</button>
+        <div class="card"><div class="card-title">₿ Crypto Binance</div><div id="crypto-prices">Cargando...</div></div>
     </div>
 
-    <!-- TAB: Quotex (iframe) -->
     <div id="tab-quotex" class="tab-content">
-        <div class="card">
-            <div class="card-title">💹 Quotex - Plataforma de Trading</div>
-            <p style="font-size:12px;color:var(--subtext);margin-bottom:10px;">Plataforma real de Quotex integrada</p>
-        </div>
-        <div class="iframe-container">
-            <iframe id="quotex-iframe" 
-                    src="https://quotex.io/en/trade" 
-                    allow="camera;microphone;payment"
-                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals">
-            </iframe>
-        </div>
-        <div style="margin-top:10px;display:flex;gap:8px;">
-            <button class="btn btn-outline" onclick="document.getElementById('quotex-iframe').src='https://quotex.io/en/trade'">🔄 Recargar</button>
-            <button class="btn btn-green" onclick="window.open('https://quotex.io/en/trade', '_blank')">🔗 Abrir en navegador</button>
-        </div>
+        <div class="card"><div class="card-title">💹 Quotex - Plataforma Oficial</div></div>
+        <div class="iframe-container"><iframe id="quotex-iframe" src="https://broker-qx.pro/sign-up/?lid=2097658" allow="camera;microphone;payment" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals"></iframe></div>
+        <button class="btn btn-green" onclick="window.open('https://broker-qx.pro/sign-up/?lid=2097658', '_blank')">🔗 Abrir en navegador</button>
+        <button class="btn btn-outline" onclick="document.getElementById('quotex-iframe').src='https://broker-qx.pro/sign-up/?lid=2097658'">🔄 Recargar</button>
     </div>
 
-    <!-- TAB: Señales -->
     <div id="tab-senales" class="tab-content">
-        <div class="card signal-card">
-            <div class="card-title">🎯 Señal Forex - Quotex</div>
+        <div class="card signal-card"><div class="card-title">🎯 Señal Forex</div>
             <div id="senal-forex">
                 <div class="signal-row"><span>📊 Par:</span><span><strong>EUR/USD</strong></span></div>
-                <div class="signal-row"><span>⏰ Entrada:</span><span><strong id="hora-entrada">16:45</strong></span></div>
-                <div class="signal-row"><span>🎯 Dirección:</span><span><strong id="direccion">CALL 🟩</strong></span></div>
-                <div class="signal-row"><span>⏳ Vencimiento:</span><span><strong id="vencimiento">16:50</strong></span></div>
-                <div class="signal-row"><span>📈 Gale 1:</span><span><strong id="gale1">16:55</strong></span></div>
-                <div class="signal-row"><span>📈 Gale 2:</span><span><strong id="gale2">17:00</strong></span></div>
+                <div class="signal-row"><span>⏰ Entrada:</span><span><strong id="hora-entrada">--:--</strong></span></div>
+                <div class="signal-row"><span>🎯 Dirección:</span><span><strong id="direccion">--</strong></span></div>
+                <div class="signal-row"><span>⏳ Vencimiento:</span><span><strong id="vencimiento">--:--</strong></span></div>
+                <div class="signal-row"><span>📈 Gale 1:</span><span><strong id="gale1">--:--</strong></span></div>
+                <div class="signal-row"><span>📈 Gale 2:</span><span><strong id="gale2">--:--</strong></span></div>
             </div>
         </div>
-        <button class="btn btn-green" onclick="generarSenal()">🔄 Generar Nueva Señal</button>
-        <button class="btn btn-gold" onclick="showTab('quotex')">💹 Operar en Quotex</button>
-    </div>
-
-    <!-- Botón fijo inferior -->
-    <div style="position:sticky;bottom:15px;margin-top:20px;">
-        <button class="btn btn-danger" onclick="window.Telegram.WebApp.close()">✕ CERRAR MINI APP</button>
+        <button class="btn btn-green" onclick="generarSenal()">🔄 Nueva Señal</button>
+        <button class="btn btn-gold" onclick="abrirQuotex()">💹 Operar en Quotex</button>
     </div>
 
     <script>
         const tg = window.Telegram.WebApp;
-        tg.expand();
-        tg.ready();
-        tg.setHeaderColor('#1a1a2e');
-        tg.setBackgroundColor('#0f0f1a');
+        tg.expand(); tg.ready();
 
-        // Configurar MainButton
-        tg.MainButton.setText('📱 VOLVER AL BOT')
-            .setParams({ color: '#00ff88' })
-            .show()
-            .onClick(() => tg.close());
-
-        // Navegación por tabs
-        function showTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            
-            const tab = document.getElementById('tab-' + tabName);
-            if (tab) tab.classList.add('active');
-            
-            document.querySelectorAll('.nav-tab').forEach(btn => {
-                if (btn.textContent.toLowerCase().includes(tabName) || 
-                    (tabName === 'inicio' && btn.textContent.includes('Inicio'))) {
-                    btn.classList.add('active');
-                }
-            });
-
-            if (tabName === 'forex') cargarPreciosForex();
-            if (tabName === 'crypto') cargarPreciosCrypto();
+        function abrirQuotex() {
+            window.open('https://broker-qx.pro/sign-up/?lid=2097658', '_blank');
         }
 
-        // Generar señal
+        function showTab(tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById('tab-' + tab).classList.add('active');
+            event.target.classList.add('active');
+            if (tab === 'forex') cargarForex();
+            if (tab === 'crypto') cargarCrypto();
+        }
+
         function generarSenal() {
             const ahora = new Date();
-            const minutos = Math.ceil(ahora.getMinutes() / 5) * 5;
-            const entrada = new Date(ahora);
-            entrada.setMinutes(minutos, 0, 0);
-            
-            const vencimiento = new Date(entrada.getTime() + 5 * 60000);
-            const gale1 = new Date(vencimiento.getTime() + 5 * 60000);
-            const gale2 = new Date(gale1.getTime() + 5 * 60000);
-            
-            const formato = (f) => f.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
-            const direccion = Math.random() > 0.5 ? 'CALL 🟩' : 'PUT 🟥';
-            
-            document.getElementById('hora-entrada').textContent = formato(entrada);
-            document.getElementById('direccion').textContent = direccion;
-            document.getElementById('vencimiento').textContent = formato(vencimiento);
-            document.getElementById('gale1').textContent = formato(gale1);
-            document.getElementById('gale2').textContent = formato(gale2);
-            
+            const min = Math.ceil(ahora.getMinutes() / 5) * 5;
+            const entrada = new Date(ahora); entrada.setMinutes(min, 0, 0);
+            const vence = new Date(entrada.getTime() + 300000);
+            const g1 = new Date(vence.getTime() + 300000);
+            const g2 = new Date(g1.getTime() + 300000);
+            const f = d => d.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
+            const dir = Math.random() > 0.5 ? 'CALL 🟩' : 'PUT 🟥';
+            document.getElementById('hora-entrada').textContent = f(entrada);
+            document.getElementById('direccion').textContent = dir;
+            document.getElementById('vencimiento').textContent = f(vence);
+            document.getElementById('gale1').textContent = f(g1);
+            document.getElementById('gale2').textContent = f(g2);
             tg.HapticFeedback.notification('success');
         }
 
-        // Cargar precios Forex
-        async function cargarPreciosForex() {
-            const pares = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF'];
-            const grid = document.getElementById('forex-prices');
-            
+        async function cargarForex() {
             try {
-                const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
-                const data = await res.json();
-                const rates = data.rates;
-                
-                grid.innerHTML = pares.map(par => {
-                    const [base, quote] = par.split('/');
-                    const precio = base === 'USD' ? rates[quote] : rates[quote] / rates[base];
-                    const cambio = (Math.random() * 1 - 0.5).toFixed(2);
-                    const up = cambio > 0;
-                    
-                    return `
-                        <div class="forex-item" onclick="showTab('quotex')">
-                            <div class="forex-pair">${par}</div>
-                            <div class="forex-price">${precio.toFixed(5)}</div>
-                            <div class="forex-change ${up ? 'price-up' : 'price-down'}">
-                                ${up ? '+' : ''}${cambio}%
-                            </div>
-                        </div>`;
-                }).join('');
-            } catch(e) {
-                grid.innerHTML = '<div class="forex-item"><div class="forex-pair">Error al cargar</div></div>';
-            }
+                const r = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+                const d = await r.json();
+                const pares = [['EUR/USD','EUR'],['GBP/USD','GBP'],['USD/JPY','JPY'],['AUD/USD','AUD']];
+                let h = '';
+                pares.forEach(([p, q]) => {
+                    const precio = p.startsWith('USD') ? d.rates[q] : d.rates[q] / d.rates[p.split('/')[0]];
+                    h += `<div class="forex-item" onclick="abrirQuotex()"><div class="forex-pair">${p}</div><div class="forex-price">${precio.toFixed(5)}</div></div>`;
+                });
+                document.getElementById('forex-prices').innerHTML = h;
+            } catch(e) { document.getElementById('forex-prices').innerHTML = 'Error'; }
         }
 
-        // Cargar precios Crypto
-        async function cargarPreciosCrypto() {
-            const container = document.getElementById('crypto-prices');
-            
+        async function cargarCrypto() {
             try {
-                const symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT'];
-                const promesas = symbols.map(sym =>
-                    fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`).then(r => r.json())
-                );
-                
-                const resultados = await Promise.all(promesas);
-                
-                container.innerHTML = resultados.map(r => `
-                    <div class="card" style="margin-bottom:8px;">
-                        <div style="display:flex;justify-content:space-between;align-items:center;">
-                            <span style="font-weight:700;">${r.symbol.replace('USDT','')}</span>
-                            <span style="font-size:18px;font-weight:700;">$${parseFloat(r.price).toFixed(2)}</span>
-                        </div>
-                    </div>
-                `).join('');
-            } catch(e) {
-                container.innerHTML = 'Error al cargar precios Crypto';
-            }
+                const syms = ['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT'];
+                const proms = syms.map(s => fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${s}`).then(r => r.json()));
+                const res = await Promise.all(proms);
+                let h = '';
+                res.forEach(r => { h += `<div class="card"><strong>${r.symbol.replace('USDT','')}</strong>: $${parseFloat(r.price).toFixed(2)}</div>`; });
+                document.getElementById('crypto-prices').innerHTML = h;
+            } catch(e) { document.getElementById('crypto-prices').innerHTML = 'Error'; }
         }
 
-        // Inicializar
         generarSenal();
     </script>
 </body>
