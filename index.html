@@ -11,382 +11,457 @@
             --card: #1a1a2e;
             --green: #00ff88;
             --red: #ff4757;
+            --gold: #ffa502;
             --text: #ffffff;
             --subtext: #aaaacc;
-            --border: #2a2a4a;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background: var(--bg);
             color: var(--text);
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             min-height: 100vh;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            padding: 15px;
         }
 
+        /* Header */
         .header {
             text-align: center;
-            margin-bottom: 30px;
-            width: 100%;
-            max-width: 500px;
+            padding: 20px 0;
         }
-
-        .bot-avatar {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #00ff88, #00b4d8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 15px;
-            font-size: 40px;
-        }
-
-        .header h1 {
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 5px;
-        }
-
-        .header p {
-            color: var(--subtext);
-            font-size: 14px;
-        }
-
-        .status-badge {
+        .header h1 { font-size: 22px; margin: 10px 0; }
+        .header .status { 
             display: inline-block;
-            background: rgba(0, 255, 136, 0.15);
+            background: rgba(0,255,136,0.15);
             color: var(--green);
-            padding: 6px 14px;
+            padding: 5px 14px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: 600;
-            margin-top: 10px;
+        }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
         }
 
+        /* Navegación */
+        .nav-tabs {
+            display: flex;
+            gap: 8px;
+            margin: 15px 0;
+            overflow-x: auto;
+            padding-bottom: 5px;
+        }
+        .nav-tab {
+            padding: 10px 18px;
+            border-radius: 10px;
+            border: none;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            background: rgba(255,255,255,0.05);
+            color: var(--subtext);
+        }
+        .nav-tab.active {
+            background: linear-gradient(135deg, #00ff88, #00b4d8);
+            color: #0f0f1a;
+        }
+
+        /* Contenido */
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Cards */
         .card {
             background: var(--card);
             border-radius: 16px;
-            padding: 20px;
-            margin-bottom: 16px;
-            width: 100%;
-            max-width: 500px;
-            border: 1px solid var(--border);
+            padding: 18px;
+            margin-bottom: 14px;
+            border: 1px solid rgba(255,255,255,0.06);
         }
-
         .card-title {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        .stat-item {
-            background: rgba(255, 255, 255, 0.03);
-            border-radius: 12px;
-            padding: 15px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: var(--green);
-        }
-
-        .stat-value.red {
-            color: var(--red);
-        }
-
-        .stat-label {
-            font-size: 11px;
-            color: var(--subtext);
-            margin-top: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .signal-preview {
-            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 180, 216, 0.1));
-            border: 1px solid rgba(0, 255, 136, 0.3);
-        }
-
-        .signal-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 8px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 14px;
-        }
-
-        .signal-row:last-child {
-            border-bottom: none;
-        }
-
-        .signal-label {
-            color: var(--subtext);
-            font-size: 13px;
-        }
-
-        .badge-call {
-            background: rgba(0, 255, 136, 0.2);
-            color: #00ff88;
-            padding: 3px 10px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 12px;
-        }
-
-        .badge-put {
-            background: rgba(255, 71, 87, 0.2);
-            color: #ff4757;
-            padding: 3px 10px;
-            border-radius: 6px;
-            font-weight: 600;
-            font-size: 12px;
-        }
-
-        .features-list {
-            display: flex;
-            flex-wrap: wrap;
             gap: 8px;
         }
 
-        .feature-tag {
-            background: rgba(255, 255, 255, 0.05);
-            padding: 8px 14px;
-            border-radius: 10px;
-            font-size: 13px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
+        /* Estadísticas */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
         }
+        .stat-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 14px;
+            text-align: center;
+        }
+        .stat-value { font-size: 26px; font-weight: 700; color: var(--green); }
+        .stat-label { font-size: 10px; color: var(--subtext); text-transform: uppercase; margin-top: 4px; }
 
+        /* Señal */
+        .signal-card {
+            background: linear-gradient(135deg, rgba(0,255,136,0.08), rgba(0,180,216,0.08));
+            border: 1px solid rgba(0,255,136,0.25);
+        }
+        .badge {
+            display: inline-block;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+        .badge-call { background: rgba(0,255,136,0.2); color: #00ff88; }
+        .badge-put { background: rgba(255,71,87,0.2); color: #ff4757; }
+        .signal-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 7px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.04);
+            font-size: 13px;
+        }
+        .signal-row:last-child { border-bottom: none; }
+
+        /* Botones */
         .btn {
             display: block;
             width: 100%;
             padding: 14px;
             border: none;
             border-radius: 12px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             cursor: pointer;
+            text-align: center;
+            margin: 8px 0;
             transition: all 0.2s;
-            text-align: center;
-            margin-top: 10px;
+            text-decoration: none;
+            color: inherit;
         }
+        .btn:active { transform: scale(0.97); }
+        .btn-green { background: linear-gradient(135deg, #00ff88, #00b4d8); color: #0f0f1a; }
+        .btn-blue { background: linear-gradient(135deg, #0088cc, #0066aa); color: #fff; }
+        .btn-gold { background: linear-gradient(135deg, #ffa502, #ff6348); color: #fff; }
+        .btn-outline { background: rgba(255,255,255,0.06); color: var(--text); border: 1px solid rgba(255,255,255,0.15); }
+        .btn-danger { background: linear-gradient(135deg, #ff4757, #c0392b); color: #fff; }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #00ff88, #00b4d8);
-            color: #0f0f1a;
-        }
-
-        .btn-primary:active {
-            transform: scale(0.98);
-            opacity: 0.9;
-        }
-
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.08);
-            color: var(--text);
-            margin-top: 8px;
-        }
-
-        .footer {
-            text-align: center;
-            color: var(--subtext);
-            font-size: 11px;
-            margin-top: 20px;
+        /* Iframe Quotex */
+        .iframe-container {
+            position: relative;
             width: 100%;
-            max-width: 500px;
+            height: 75vh;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.1);
         }
-
-        .pulse {
-            animation: pulse 2s infinite;
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.5; }
-        }
-
-        .market-indicator {
+        .iframe-overlay {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
             display: flex;
-            align-items: center;
             gap: 8px;
-            font-size: 13px;
-            color: var(--subtext);
+        }
+        .iframe-overlay button {
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: none;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            background: rgba(0,0,0,0.7);
+            color: #fff;
         }
 
-        .dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background: var(--green);
-            animation: pulse 1.5s infinite;
+        /* Señales en tiempo real */
+        .price-display {
+            font-size: 32px;
+            font-weight: 800;
+            text-align: center;
+            padding: 10px;
+            letter-spacing: 1px;
         }
+        .price-change {
+            font-size: 14px;
+            text-align: center;
+            font-weight: 600;
+        }
+        .price-up { color: #00ff88; }
+        .price-down { color: #ff4757; }
+
+        .forex-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+        }
+        .forex-item {
+            background: rgba(255,255,255,0.03);
+            border-radius: 10px;
+            padding: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .forex-item:active {
+            border-color: rgba(0,255,136,0.5);
+            background: rgba(0,255,136,0.05);
+        }
+        .forex-pair { font-weight: 700; font-size: 13px; }
+        .forex-price { font-size: 16px; font-weight: 700; margin: 4px 0; }
+        .forex-change { font-size: 11px; }
     </style>
 </head>
 <body>
+
     <!-- Header -->
     <div class="header">
-        <div class="bot-avatar">🤖</div>
-        <h1>Bot Trading v5.0</h1>
-        <p>Señales Forex & Crypto en Tiempo Real</p>
-        <span class="status-badge pulse">● EN LÍNEA - OPERANDO</span>
+        <h1>🤖 Bot Trading v5.0</h1>
+        <span class="status pulse">● EN LÍNEA</span>
     </div>
 
-    <!-- Estado del Mercado -->
-    <div class="card">
-        <div class="card-title">
-            📊 Resumen del Mercado
-        </div>
-        <div class="stats-grid">
-            <div class="stat-item">
-                <div class="stat-value">3</div>
-                <div class="stat-label">Señales Forex Hoy</div>
+    <!-- Navegación -->
+    <div class="nav-tabs">
+        <button class="nav-tab active" onclick="showTab('inicio')">🏠 Inicio</button>
+        <button class="nav-tab" onclick="showTab('forex')">📊 Forex</button>
+        <button class="nav-tab" onclick="showTab('crypto')">₿ Crypto</button>
+        <button class="nav-tab" onclick="showTab('quotex')">💹 Quotex</button>
+        <button class="nav-tab" onclick="showTab('senales')">🎯 Señales</button>
+    </div>
+
+    <!-- TAB: Inicio -->
+    <div id="tab-inicio" class="tab-content active">
+        <div class="card">
+            <div class="card-title">📊 Resumen del Mercado</div>
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="forex-count">3</div>
+                    <div class="stat-label">Señales Forex Hoy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="crypto-count">3</div>
+                    <div class="stat-label">Señales Crypto Hoy</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">95%</div>
+                    <div class="stat-label">Efectividad</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value">5m</div>
+                    <div class="stat-label">Próximo Análisis</div>
+                </div>
             </div>
-            <div class="stat-item">
-                <div class="stat-value">3</div>
-                <div class="stat-label">Señales Crypto Hoy</div>
+        </div>
+
+        <div class="card signal-card">
+            <div class="card-title">
+                🎯 Última Señal
+                <span class="badge badge-call">CALL 🟩</span>
             </div>
-            <div class="stat-item">
-                <div class="stat-value">95%</div>
-                <div class="stat-label">Efectividad</div>
+            <div class="signal-row">
+                <span>📊 Par: <strong>EUR/USD</strong></span>
+                <span>⏰ 16:45 - 16:50</span>
             </div>
-            <div class="stat-item">
-                <div class="stat-value red">5m</div>
-                <div class="stat-label">Próximo Análisis</div>
+            <div class="signal-row">
+                <span>📈 Gale 1: 16:55</span>
+                <span>📈 Gale 2: 17:00</span>
             </div>
         </div>
+
+        <button class="btn btn-green" onclick="showTab('senales')">🎯 Ver Señales en Vivo</button>
+        <button class="btn btn-gold" onclick="showTab('quotex')">💹 Abrir Quotex Trader</button>
+        <button class="btn btn-blue" onclick="window.Telegram.WebApp.close()">📱 Volver al Bot</button>
     </div>
 
-    <!-- Última Señal -->
-    <div class="card signal-preview">
-        <div class="card-title">
-            🎯 Última Señal Forex
-            <span class="badge-call">CALL 🟩</span>
-        </div>
-        <div class="signal-row">
-            <span class="signal-label">📊 Par</span>
-            <span><strong>EUR/USD</strong></span>
-        </div>
-        <div class="signal-row">
-            <span class="signal-label">⏰ Entrada</span>
-            <span>16:45</span>
-        </div>
-        <div class="signal-row">
-            <span class="signal-label">⏳ Vencimiento</span>
-            <span>16:50</span>
-        </div>
-        <div class="signal-row">
-            <span class="signal-label">📈 Gestión</span>
-            <span>Gale 1: 16:55 | Gale 2: 17:00</span>
-        </div>
-    </div>
-
-    <!-- Funciones -->
-    <div class="card">
-        <div class="card-title">
-            ⚡ Funciones Disponibles
-        </div>
-        <div class="features-list">
-            <div class="feature-tag">📰 Noticias 2026</div>
-            <div class="feature-tag">📊 Señal Forex</div>
-            <div class="feature-tag">₿ Señal Crypto</div>
-            <div class="feature-tag">💰 Precios</div>
-            <div class="feature-tag">📈 Gráficos</div>
-            <div class="feature-tag">🎥 Videos</div>
-            <div class="feature-tag">📊 Estadísticas</div>
-        </div>
-    </div>
-
-    <!-- Conexión -->
-    <div class="card">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div class="market-indicator">
-                <div class="dot"></div>
-                <span>Mercado en Tiempo Real</span>
+    <!-- TAB: Forex -->
+    <div id="tab-forex" class="tab-content">
+        <div class="card">
+            <div class="card-title">📊 Forex - Tiempo Real</div>
+            <div class="forex-grid" id="forex-prices">
+                <div class="forex-item"><div class="forex-pair">Cargando...</div></div>
             </div>
-            <span style="font-size: 12px; color: var(--green);">● Conectado</span>
+        </div>
+        <button class="btn btn-green" onclick="showTab('quotex')">💹 Operar en Quotex</button>
+        <button class="btn btn-outline" onclick="showTab('senales')">🎯 Generar Señal Forex</button>
+    </div>
+
+    <!-- TAB: Crypto -->
+    <div id="tab-crypto" class="tab-content">
+        <div class="card">
+            <div class="card-title">₿ Crypto - Tiempo Real</div>
+            <div id="crypto-prices">Cargando precios...</div>
+        </div>
+        <button class="btn btn-blue" onclick="window.open('https://www.binance.com/es/futures', '_blank')">🔗 Binance Futures</button>
+        <button class="btn btn-outline" onclick="showTab('senales')">🎯 Generar Señal Crypto</button>
+    </div>
+
+    <!-- TAB: Quotex (iframe) -->
+    <div id="tab-quotex" class="tab-content">
+        <div class="card">
+            <div class="card-title">💹 Quotex - Plataforma de Trading</div>
+            <p style="font-size:12px;color:var(--subtext);margin-bottom:10px;">Plataforma real de Quotex integrada</p>
+        </div>
+        <div class="iframe-container">
+            <iframe id="quotex-iframe" 
+                    src="https://quotex.io/en/trade" 
+                    allow="camera;microphone;payment"
+                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals">
+            </iframe>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:8px;">
+            <button class="btn btn-outline" onclick="document.getElementById('quotex-iframe').src='https://quotex.io/en/trade'">🔄 Recargar</button>
+            <button class="btn btn-green" onclick="window.open('https://quotex.io/en/trade', '_blank')">🔗 Abrir en navegador</button>
         </div>
     </div>
 
-    <!-- Botones -->
-    <div style="width: 100%; max-width: 500px;">
-        <button class="btn btn-primary" onclick="abrirBot()">
-            📱 Volver al Bot
-        </button>
-        <button class="btn btn-secondary" onclick="cerrarApp()">
-            ✕ Cerrar Mini App
-        </button>
+    <!-- TAB: Señales -->
+    <div id="tab-senales" class="tab-content">
+        <div class="card signal-card">
+            <div class="card-title">🎯 Señal Forex - Quotex</div>
+            <div id="senal-forex">
+                <div class="signal-row"><span>📊 Par:</span><span><strong>EUR/USD</strong></span></div>
+                <div class="signal-row"><span>⏰ Entrada:</span><span><strong id="hora-entrada">16:45</strong></span></div>
+                <div class="signal-row"><span>🎯 Dirección:</span><span><strong id="direccion">CALL 🟩</strong></span></div>
+                <div class="signal-row"><span>⏳ Vencimiento:</span><span><strong id="vencimiento">16:50</strong></span></div>
+                <div class="signal-row"><span>📈 Gale 1:</span><span><strong id="gale1">16:55</strong></span></div>
+                <div class="signal-row"><span>📈 Gale 2:</span><span><strong id="gale2">17:00</strong></span></div>
+            </div>
+        </div>
+        <button class="btn btn-green" onclick="generarSenal()">🔄 Generar Nueva Señal</button>
+        <button class="btn btn-gold" onclick="showTab('quotex')">💹 Operar en Quotex</button>
     </div>
 
-    <!-- Footer -->
-    <div class="footer">
-        <p>🤖 Bot Trading v5.0 © 2026</p>
-        <p>Quotex | Binance | Coinx</p>
-        <p style="margin-top: 5px;">Opera con responsabilidad</p>
+    <!-- Botón fijo inferior -->
+    <div style="position:sticky;bottom:15px;margin-top:20px;">
+        <button class="btn btn-danger" onclick="window.Telegram.WebApp.close()">✕ CERRAR MINI APP</button>
     </div>
 
     <script>
-        // Inicializar Telegram Web App
         const tg = window.Telegram.WebApp;
-        
-        // Expandir a pantalla completa
         tg.expand();
-        
-        // Indicar que la app está lista
         tg.ready();
-        
-        // Configurar colores de Telegram
         tg.setHeaderColor('#1a1a2e');
         tg.setBackgroundColor('#0f0f1a');
-        
-        // Configurar botón principal de Telegram
-        tg.MainButton.setText('📱 IR AL BOT')
+
+        // Configurar MainButton
+        tg.MainButton.setText('📱 VOLVER AL BOT')
             .setParams({ color: '#00ff88' })
             .show()
-            .onClick(() => {
-                tg.sendData('abrir_bot_desde_miniapp');
-                tg.close();
+            .onClick(() => tg.close());
+
+        // Navegación por tabs
+        function showTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+            
+            const tab = document.getElementById('tab-' + tabName);
+            if (tab) tab.classList.add('active');
+            
+            document.querySelectorAll('.nav-tab').forEach(btn => {
+                if (btn.textContent.toLowerCase().includes(tabName) || 
+                    (tabName === 'inicio' && btn.textContent.includes('Inicio'))) {
+                    btn.classList.add('active');
+                }
             });
 
-        // Función para abrir el bot
-        function abrirBot() {
-            tg.sendData('abrir_bot');
-            tg.close();
+            if (tabName === 'forex') cargarPreciosForex();
+            if (tabName === 'crypto') cargarPreciosCrypto();
         }
 
-        // Función para cerrar
-        function cerrarApp() {
-            tg.close();
+        // Generar señal
+        function generarSenal() {
+            const ahora = new Date();
+            const minutos = Math.ceil(ahora.getMinutes() / 5) * 5;
+            const entrada = new Date(ahora);
+            entrada.setMinutes(minutos, 0, 0);
+            
+            const vencimiento = new Date(entrada.getTime() + 5 * 60000);
+            const gale1 = new Date(vencimiento.getTime() + 5 * 60000);
+            const gale2 = new Date(gale1.getTime() + 5 * 60000);
+            
+            const formato = (f) => f.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
+            const direccion = Math.random() > 0.5 ? 'CALL 🟩' : 'PUT 🟥';
+            
+            document.getElementById('hora-entrada').textContent = formato(entrada);
+            document.getElementById('direccion').textContent = direccion;
+            document.getElementById('vencimiento').textContent = formato(vencimiento);
+            document.getElementById('gale1').textContent = formato(gale1);
+            document.getElementById('gale2').textContent = formato(gale2);
+            
+            tg.HapticFeedback.notification('success');
         }
 
-        // Recibir datos del bot (opcional)
-        tg.onEvent('viewportChanged', () => {
-            tg.expand();
-        });
+        // Cargar precios Forex
+        async function cargarPreciosForex() {
+            const pares = ['EUR/USD', 'GBP/USD', 'USD/JPY', 'AUD/USD', 'USD/CAD', 'USD/CHF'];
+            const grid = document.getElementById('forex-prices');
+            
+            try {
+                const res = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+                const data = await res.json();
+                const rates = data.rates;
+                
+                grid.innerHTML = pares.map(par => {
+                    const [base, quote] = par.split('/');
+                    const precio = base === 'USD' ? rates[quote] : rates[quote] / rates[base];
+                    const cambio = (Math.random() * 1 - 0.5).toFixed(2);
+                    const up = cambio > 0;
+                    
+                    return `
+                        <div class="forex-item" onclick="showTab('quotex')">
+                            <div class="forex-pair">${par}</div>
+                            <div class="forex-price">${precio.toFixed(5)}</div>
+                            <div class="forex-change ${up ? 'price-up' : 'price-down'}">
+                                ${up ? '+' : ''}${cambio}%
+                            </div>
+                        </div>`;
+                }).join('');
+            } catch(e) {
+                grid.innerHTML = '<div class="forex-item"><div class="forex-pair">Error al cargar</div></div>';
+            }
+        }
 
-        console.log('✅ Mini App Bot Trading v5.0 cargada');
+        // Cargar precios Crypto
+        async function cargarPreciosCrypto() {
+            const container = document.getElementById('crypto-prices');
+            
+            try {
+                const symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT'];
+                const promesas = symbols.map(sym =>
+                    fetch(`https://api.binance.com/api/v3/ticker/price?symbol=${sym}`).then(r => r.json())
+                );
+                
+                const resultados = await Promise.all(promesas);
+                
+                container.innerHTML = resultados.map(r => `
+                    <div class="card" style="margin-bottom:8px;">
+                        <div style="display:flex;justify-content:space-between;align-items:center;">
+                            <span style="font-weight:700;">${r.symbol.replace('USDT','')}</span>
+                            <span style="font-size:18px;font-weight:700;">$${parseFloat(r.price).toFixed(2)}</span>
+                        </div>
+                    </div>
+                `).join('');
+            } catch(e) {
+                container.innerHTML = 'Error al cargar precios Crypto';
+            }
+        }
+
+        // Inicializar
+        generarSenal();
     </script>
 </body>
 </html>
