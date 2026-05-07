@@ -10,12 +10,12 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             min-height: 100vh;
-            background: #0a0a0a url('https://i.imgur.com/4KjOq8E.jpg') center/cover no-repeat fixed;
+            background: #0a0a0a url('https://i.imgur.com/x3D82IK.jpg') center/cover no-repeat fixed;
             color: #ffffff;
             padding: 15px;
         }
         .overlay {
-            background: rgba(0, 0, 0, 0.65);
+            background: rgba(0, 0, 0, 0.7);
             border-radius: 20px;
             padding: 15px;
             min-height: 100vh;
@@ -47,20 +47,11 @@
         .btn:active { transform: scale(0.97); }
         .btn-green { background: linear-gradient(135deg, #00ff88, #00b4d8); color: #000; }
         .btn-gold { background: linear-gradient(135deg, #ffa502, #ff6348); color: #fff; }
-        .btn-yellow { background: linear-gradient(135deg, #f0b90b, #f8d33a); color: #000; }
         .btn-outline { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.2); }
         .forex-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         .forex-item { background: rgba(255,255,255,0.04); border-radius: 10px; padding: 12px; cursor: pointer; }
         .forex-pair { font-weight: 700; font-size: 13px; }
         .forex-price { font-size: 16px; font-weight: 700; }
-        .crypto-list { max-height: 400px; overflow-y: auto; }
-        .crypto-item { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid rgba(255,255,255,0.05); font-size: 13px; }
-        .broker-buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-        .broker-btn { padding: 15px; border-radius: 12px; text-align: center; font-weight: 700; cursor: pointer; font-size: 14px; }
-        .broker-quotex { background: linear-gradient(135deg, #1a1a1a, #333); border: 2px solid #ffa502; color: #ffa502; }
-        .broker-binance { background: linear-gradient(135deg, #1a1a1a, #333); border: 2px solid #f0b90b; color: #f0b90b; }
-        .price-up { color: #00ff88; }
-        .price-down { color: #ff4757; }
     </style>
 </head>
 <body>
@@ -68,13 +59,12 @@
         <div class="header">
             <h1>🤖 Angel Trader Robot</h1>
             <p class="subtitle">TÉCNICA · RISCO · ANÁLISE · DISCIPLINA · ESTRATÉGIA · RESULTADO</p>
-            <span class="status pulse">● EN LÍNEA - 8 SEÑALES/DÍA</span>
+            <span class="status pulse">● EN LÍNEA - FOREX QUOTEX</span>
         </div>
 
         <div class="nav-tabs">
             <button class="nav-tab active" onclick="showTab('inicio')">🏠 Inicio</button>
             <button class="nav-tab" onclick="showTab('forex')">📊 Forex</button>
-            <button class="nav-tab" onclick="showTab('crypto')">₿ Crypto</button>
             <button class="nav-tab" onclick="showTab('senales')">🎯 Señales</button>
         </div>
 
@@ -84,32 +74,18 @@
                 <div class="stats-grid">
                     <div class="stat-item"><div class="stat-value">8</div><div class="stat-label">Señales/Día</div></div>
                     <div class="stat-item"><div class="stat-value">95%</div><div class="stat-label">Efectividad</div></div>
-                    <div class="stat-item"><div class="stat-value">5m</div><div class="stat-label">Próximo</div></div>
+                    <div class="stat-item"><div class="stat-value">5m</div><div class="stat-label">Vencimiento</div></div>
                     <div class="stat-item"><div class="stat-value">24/7</div><div class="stat-label">Activo</div></div>
                 </div>
             </div>
-            
-            <div class="broker-buttons">
-                <div class="broker-btn broker-quotex" onclick="window.open('https://broker-qx.pro/sign-up/?lid=2097658', '_blank')">
-                    💹 QUOTEX<br><small>Operar Forex</small>
-                </div>
-                <div class="broker-btn broker-binance" onclick="window.open('https://www.binance.com/register?ref=791249019', '_blank')">
-                    ₿ BINANCE<br><small>Operar Crypto</small>
-                </div>
-            </div>
-            
             <button class="btn btn-green" onclick="showTab('senales')">🎯 Ver Señales en Vivo</button>
+            <button class="btn btn-gold" onclick="window.open('https://broker-qx.pro/sign-up/?lid=2097658', '_blank')">💹 ABRIR QUOTEX</button>
             <button class="btn btn-outline" onclick="window.Telegram.WebApp.close()">📱 Cerrar</button>
         </div>
 
         <div id="tab-forex" class="tab-content">
             <div class="card"><div class="card-title">📊 Forex - Tiempo Real</div><div class="forex-grid" id="forex-prices">Cargando precios...</div></div>
             <button class="btn btn-gold" onclick="window.open('https://broker-qx.pro/sign-up/?lid=2097658', '_blank')">💹 Operar en Quotex</button>
-        </div>
-
-        <div id="tab-crypto" class="tab-content">
-            <div class="card"><div class="card-title">₿ Todas las Cryptos - Binance</div><div class="crypto-list" id="crypto-prices">Cargando precios...</div></div>
-            <button class="btn btn-yellow" onclick="window.open('https://www.binance.com/register?ref=791249019', '_blank')">₿ Operar en Binance</button>
         </div>
 
         <div id="tab-senales" class="tab-content">
@@ -139,7 +115,6 @@
             document.getElementById('tab-' + tab).classList.add('active');
             event.target.classList.add('active');
             if (tab === 'forex') cargarForex();
-            if (tab === 'crypto') cargarCrypto();
         }
 
         function generarSenal() {
@@ -171,21 +146,6 @@
                 });
                 document.getElementById('forex-prices').innerHTML = h;
             } catch(e) { document.getElementById('forex-prices').innerHTML = 'Error al cargar'; }
-        }
-
-        async function cargarCrypto() {
-            try {
-                const syms = ['BTCUSDT','ETHUSDT','BNBUSDT','SOLUSDT','ADAUSDT','XRPUSDT','DOGEUSDT','DOTUSDT','AVAXUSDT','MATICUSDT','LINKUSDT','UNIUSDT','ATOMUSDT','LTCUSDT','ETCUSDT'];
-                const proms = syms.map(s => fetch('https://api.binance.com/api/v3/ticker/price?symbol='+s).then(r => r.json()));
-                const res = await Promise.all(proms);
-                let h = '';
-                res.forEach(r => {
-                    const nombre = r.symbol.replace('USDT','');
-                    const precio = parseFloat(r.price);
-                    h += '<div class="crypto-item"><span>'+nombre+'</span><span style="font-weight:700;">$'+precio.toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2})+'</span></div>';
-                });
-                document.getElementById('crypto-prices').innerHTML = h;
-            } catch(e) { document.getElementById('crypto-prices').innerHTML = 'Error al cargar'; }
         }
 
         generarSenal();
