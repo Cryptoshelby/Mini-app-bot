@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Bot Trading v5.0</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        :root {
+            --bg: #0f0f1a;
+            --card: #1a1a2e;
+            --green: #00ff88;
+            --red: #ff4757;
+            --text: #ffffff;
+            --subtext: #aaaacc;
+            --border: #2a2a4a;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .bot-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00b4d8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 40px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .header p {
+            color: var(--subtext);
+            font-size: 14px;
+        }
+
+        .status-badge {
+            display: inline-block;
+            background: rgba(0, 255, 136, 0.15);
+            color: var(--green);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .card {
+            background: var(--card);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 16px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid var(--border);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--green);
+        }
+
+        .stat-value.red {
+            color: var(--red);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: var(--subtext);
+            margin-top: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .signal-preview {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.1), rgba(0, 180, 216, 0.1));
+            border: 1px solid rgba(0, 255, 136, 0.3);
+        }
+
+        .signal-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+        }
+
+        .signal-row:last-child {
+            border-bottom: none;
+        }
+
+        .signal-label {
+            color: var(--subtext);
+            font-size: 13px;
+        }
+
+        .badge-call {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .badge-put {
+            background: rgba(255, 71, 87, 0.2);
+            color: #ff4757;
+            padding: 3px 10px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .features-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .feature-tag {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 8px 14px;
+            border-radius: 10px;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #00ff88, #00b4d8);
+            color: #0f0f1a;
+        }
+
+        .btn-primary:active {
+            transform: scale(0.98);
+            opacity: 0.9;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: var(--text);
+            margin-top: 8px;
+        }
+
+        .footer {
+            text-align: center;
+            color: var(--subtext);
+            font-size: 11px;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .market-indicator {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: var(--subtext);
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--green);
+            animation: pulse 1.5s infinite;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <div class="header">
+        <div class="bot-avatar">🤖</div>
+        <h1>Bot Trading v5.0</h1>
+        <p>Señales Forex & Crypto en Tiempo Real</p>
+        <span class="status-badge pulse">● EN LÍNEA - OPERANDO</span>
+    </div>
+
+    <!-- Estado del Mercado -->
+    <div class="card">
+        <div class="card-title">
+            📊 Resumen del Mercado
+        </div>
+        <div class="stats-grid">
+            <div class="stat-item">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Señales Forex Hoy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">3</div>
+                <div class="stat-label">Señales Crypto Hoy</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">95%</div>
+                <div class="stat-label">Efectividad</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value red">5m</div>
+                <div class="stat-label">Próximo Análisis</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Última Señal -->
+    <div class="card signal-preview">
+        <div class="card-title">
+            🎯 Última Señal Forex
+            <span class="badge-call">CALL 🟩</span>
+        </div>
+        <div class="signal-row">
+            <span class="signal-label">📊 Par</span>
+            <span><strong>EUR/USD</strong></span>
+        </div>
+        <div class="signal-row">
+            <span class="signal-label">⏰ Entrada</span>
+            <span>16:45</span>
+        </div>
+        <div class="signal-row">
+            <span class="signal-label">⏳ Vencimiento</span>
+            <span>16:50</span>
+        </div>
+        <div class="signal-row">
+            <span class="signal-label">📈 Gestión</span>
+            <span>Gale 1: 16:55 | Gale 2: 17:00</span>
+        </div>
+    </div>
+
+    <!-- Funciones -->
+    <div class="card">
+        <div class="card-title">
+            ⚡ Funciones Disponibles
+        </div>
+        <div class="features-list">
+            <div class="feature-tag">📰 Noticias 2026</div>
+            <div class="feature-tag">📊 Señal Forex</div>
+            <div class="feature-tag">₿ Señal Crypto</div>
+            <div class="feature-tag">💰 Precios</div>
+            <div class="feature-tag">📈 Gráficos</div>
+            <div class="feature-tag">🎥 Videos</div>
+            <div class="feature-tag">📊 Estadísticas</div>
+        </div>
+    </div>
+
+    <!-- Conexión -->
+    <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <div class="market-indicator">
+                <div class="dot"></div>
+                <span>Mercado en Tiempo Real</span>
+            </div>
+            <span style="font-size: 12px; color: var(--green);">● Conectado</span>
+        </div>
+    </div>
+
+    <!-- Botones -->
+    <div style="width: 100%; max-width: 500px;">
+        <button class="btn btn-primary" onclick="abrirBot()">
+            📱 Volver al Bot
+        </button>
+        <button class="btn btn-secondary" onclick="cerrarApp()">
+            ✕ Cerrar Mini App
+        </button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+        <p>🤖 Bot Trading v5.0 © 2026</p>
+        <p>Quotex | Binance | Coinx</p>
+        <p style="margin-top: 5px;">Opera con responsabilidad</p>
+    </div>
+
+    <script>
+        // Inicializar Telegram Web App
+        const tg = window.Telegram.WebApp;
+        
+        // Expandir a pantalla completa
+        tg.expand();
+        
+        // Indicar que la app está lista
+        tg.ready();
+        
+        // Configurar colores de Telegram
+        tg.setHeaderColor('#1a1a2e');
+        tg.setBackgroundColor('#0f0f1a');
+        
+        // Configurar botón principal de Telegram
+        tg.MainButton.setText('📱 IR AL BOT')
+            .setParams({ color: '#00ff88' })
+            .show()
+            .onClick(() => {
+                tg.sendData('abrir_bot_desde_miniapp');
+                tg.close();
+            });
+
+        // Función para abrir el bot
+        function abrirBot() {
+            tg.sendData('abrir_bot');
+            tg.close();
+        }
+
+        // Función para cerrar
+        function cerrarApp() {
+            tg.close();
+        }
+
+        // Recibir datos del bot (opcional)
+        tg.onEvent('viewportChanged', () => {
+            tg.expand();
+        });
+
+        console.log('✅ Mini App Bot Trading v5.0 cargada');
+    </script>
+</body>
+</html>
